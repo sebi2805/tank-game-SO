@@ -4,7 +4,8 @@
 
 int Tank::instanceCount = 0;
 
-Tank::Tank(int id, int x, int y, int color) : id(id), x(x), y(y), color(color), lastDirection('w')
+Tank::Tank(int id, int x, int y, int color)
+    : id(id), color(color), x(x), y(y), lastDirection('w')
 {
           if (++instanceCount > 2)
           {
@@ -19,55 +20,63 @@ bool is_wall(int x, int y)
 
 void Tank::move(int key)
 {
+          int newX = x, newY = y;
+
           if (id == 1)
           {
                     if (key == 'w')
                     {
-                              // move up
+                              newX = x - 1;
                     }
                     else if (key == 'a')
                     {
-                              // move left
+                              newY = y - 1;
                     }
                     else if (key == 's')
                     {
-                              // move down
+                              newX = x + 1;
                     }
                     else if (key == 'd')
                     {
-                              // move right
+                              newY = y + 1;
                     }
           }
           else if (id == 2)
           {
                     if (key == KEY_UP)
                     {
-                              // move up
+                              newX = x - 1;
                     }
                     else if (key == KEY_LEFT)
                     {
-                              // move left
+                              newY = y - 1;
                     }
                     else if (key == KEY_DOWN)
                     {
-                              // move down
+                              newX = x + 1;
                     }
                     else if (key == KEY_RIGHT)
                     {
-                              // move right
+                              newY = y + 1;
                     }
+          }
+
+          if (!is_wall(newX, newY))
+          {
+                    x = newX;
+                    y = newY;
           }
 }
 
 void Tank::shoot()
 {
-          projectiles.push_back(new Projectile(id, x, y, lastDirection, color));
+          projectiles.push_back(std::make_unique<Projectile>(id, x, y, lastDirection, color)); // Change to make_unique
 }
+
 void Tank::removeProjectile(int index)
 {
           if (index >= 0 && index < projectiles.size())
           {
-                    delete projectiles[index];
-                    projectiles.erase(projectiles.begin() + index);
+                    projectiles.erase(projectiles.begin() + index); // No need to delete, unique_ptr takes care of it
           }
 }

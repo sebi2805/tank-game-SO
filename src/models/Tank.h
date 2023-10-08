@@ -2,6 +2,7 @@
 #define TANK_MODEL_H
 #include "./Projectile.h"
 #include <vector>
+#include <memory>
 
 class Tank
 {
@@ -13,7 +14,7 @@ public:
           char lastDirection;
           Tank(int id, int x, int y, int color);
           void move(int direction);
-          std::vector<Projectile *> projectiles;
+          std::vector<std::unique_ptr<Projectile>> projectiles;
           void shoot();
           void removeProjectile(int index);
 };
