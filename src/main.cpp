@@ -4,11 +4,44 @@
 #include "./models/Tank.h"
 #include "./models/Projectile.h"
 #include <ncurses.h>
-
-void drawWall()
+void checkCollisions(Tank &tank1, Tank &tank2)
 {
+    // Check if any projectile from tank1 hit tank2
+    for (size_t i = 0; i < tank1.projectiles.size(); /* no increment */)
+    {
+        auto &projectile = tank1.projectiles[i];
+        if (tank2.isHit(projectile->x, projectile->y))
+        {
+            tank2.decreaseLife();      // Decrease the life of the tank that got hit
+            tank1.removeProjectile(i); // Remove the projectile that caused the hit
+        }
+        else
+        {
+            ++i;
+        }
+    }
+
+    // Check if any projectile from tank2 hit tank1
+    for (size_t i = 0; i < tank2.projectiles.size(); /* no increment */)
+    {
+        auto &projectile = tank2.projectiles[i];
+        if (tank1.isHit(projectile->x, projectile->y))
+        {
+            tank1.decreaseLife();      // Decrease the life of the tank that got hit
+            tank2.removeProjectile(i); // Remove the projectile that caused the hit
+        }
+        else
+        {
+            ++i;
+        }
+    }
+}
+
+void drawLayout(int player1Lives, int player2Lives)
+{
+    // Draw the walls
     attron(COLOR_PAIR(1));
-    for (int i = 0; i < 50; ++i)
+    for (int i = 10; i < 50; ++i)
     {
         for (int j = 0; j < 200; ++j)
         {
@@ -19,6 +52,36 @@ void drawWall()
         }
     }
     attroff(COLOR_PAIR(1));
+
+    // Centering adjustments
+    int halfScreenWidth = 150 / 2;
+
+    // Calculate starting positions for centered text
+    int player1Start = (halfScreenWidth / 2) - (9 + player1Lives) / 2; // 9 for "Player 1: "
+    int player2Start = halfScreenWidth + (halfScreenWidth / 2) - (9 + player2Lives) / 2;
+
+    // Draw Player 1's lives
+    attron(COLOR_PAIR(2));                   // Color for player 1
+    mvprintw(4, player1Start, "Player 1: "); // Moved to row 5 (4 in 0-based)
+    attroff(COLOR_PAIR(2));
+
+    attron(COLOR_PAIR(4)); // Color for lives
+    for (int i = 0; i < player1Lives; ++i)
+    {
+        mvprintw(4, player1Start + 9 + i, "@"); // Moved to row 5 (4 in 0-based)
+    }
+    attroff(COLOR_PAIR(4));
+
+    attron(COLOR_PAIR(3)); // Color for player 2
+    mvprintw(4, player2Start, "Player 2: ");
+    attroff(COLOR_PAIR(3));
+
+    attron(COLOR_PAIR(4)); // Color for lives
+    for (int i = 0; i < player2Lives; ++i)
+    {
+        mvprintw(4, player2Start + 9 + i, "@");
+    }
+    attroff(COLOR_PAIR(4));
 }
 void handleProjectiles(Tank &playerTank)
 {
@@ -59,6 +122,7 @@ int main()
     init_pair(1, COLOR_BLUE, COLOR_BLACK);    // Wall color
     init_pair(2, COLOR_GREEN, COLOR_BLACK);   // First tank and its projectiles
     init_pair(3, COLOR_MAGENTA, COLOR_BLACK); // Projectile color
+    init_pair(4, COLOR_RED, COLOR_BLACK);
     ////////////////////////////////////
     noecho();
     cbreak();
@@ -73,8 +137,8 @@ int main()
     }
 
     // Initialize tank
-    Tank player1Tank(1, 25, 50, 2); // ID 1, Green
-    Tank player2Tank(2, 25, 150, 3);
+    Tank player1Tank(1, 25, 50, 2, 3); // ID 1, Green
+    Tank player2Tank(2, 25, 150, 3, 3);
 
     // Vector to hold multiple projectiles
     std::vector<Projectile *> projectiles;
@@ -84,7 +148,7 @@ int main()
         // Clear screen
         erase();
 
-        drawWall();
+        drawLayout(player1Tank.getLives(), player2Tank.getLives());
         // Draw walls
         attron(COLOR_PAIR(1));
 
@@ -109,6 +173,7 @@ int main()
 
         // Handle shooting and moving
         int ch = getch();
+        flushinp();
         if (ch == 'q')
         {
             break;
@@ -130,11 +195,12 @@ int main()
         // Move and draw projectiles
         handleProjectiles(player1Tank);
         handleProjectiles(player2Tank);
+        checkCollisions(player1Tank, player2Tank);
         // Refresh screen
         refresh();
 
         // Sleep for 100ms to slow down the loop
-        usleep(100000);
+        usleep(50000);
     }
 
     // Clean up

@@ -12,11 +12,16 @@ public:
           int id;
           int x, y;
           char lastDirection;
-          Tank(int id, int x, int y, int color);
+          int lives;
+          Tank(int id, int x, int y, int color, int initialLives);
+          void decreaseLife();
+          int getLives() const;
           void move(int direction);
           std::vector<std::unique_ptr<Projectile>> projectiles;
           void shoot();
           void removeProjectile(int index);
+          bool checkCollision(const std::vector<Projectile *> &projectiles);
+          bool isHit(int x, int y);
 };
 bool is_wall(int x, int y);
 #endif
