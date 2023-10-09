@@ -20,6 +20,7 @@ bool is_wall(int x, int y)
 
 void Tank::move(int key)
 {
+
           int newX = x, newY = y;
 
           if (id == 1)
@@ -27,18 +28,22 @@ void Tank::move(int key)
                     if (key == 'w')
                     {
                               newX = x - 1;
+                              lastDirection = 'u';
                     }
                     else if (key == 'a')
                     {
                               newY = y - 1;
+                              lastDirection = 'l';
                     }
                     else if (key == 's')
                     {
                               newX = x + 1;
+                              lastDirection = 'd';
                     }
                     else if (key == 'd')
                     {
                               newY = y + 1;
+                              lastDirection = 'r';
                     }
           }
           else if (id == 2)
@@ -46,18 +51,22 @@ void Tank::move(int key)
                     if (key == KEY_UP)
                     {
                               newX = x - 1;
+                              lastDirection = 'u';
                     }
                     else if (key == KEY_LEFT)
                     {
                               newY = y - 1;
+                              lastDirection = 'l';
                     }
                     else if (key == KEY_DOWN)
                     {
                               newX = x + 1;
+                              lastDirection = 'd';
                     }
                     else if (key == KEY_RIGHT)
                     {
                               newY = y + 1;
+                              lastDirection = 'r';
                     }
           }
 

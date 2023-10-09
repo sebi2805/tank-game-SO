@@ -5,16 +5,16 @@ void Projectile::move()
 {
     switch (direction)
     {
-    case 'w':
+    case 'u':
         --x;
         break;
-    case 's':
+    case 'd':
         ++x;
         break;
-    case 'a':
+    case 'l':
         --y;
         break;
-    case 'd':
+    case 'r':
         ++y;
         break;
     }
