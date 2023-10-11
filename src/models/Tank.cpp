@@ -10,7 +10,7 @@ bool Tank::isHit(int x, int y)
         return true;
     return false;
 }
-Tank::Tank(int id, int x, int y, int color, int initialLives) : id(id), x(x), y(y), color(color), lives(initialLives)
+Tank::Tank(int id, int x, int y, int color, int initialLives) : id(id), color(color), x(x), y(y), lives(initialLives)
 {
     if (++instanceCount > 2)
     {
@@ -109,7 +109,7 @@ void Tank::shoot()
 
 void Tank::removeProjectile(int index)
 {
-    if (index >= 0 && index < projectiles.size())
+    if (index < projectiles.size())
     {
         projectiles.erase(projectiles.begin() + index); // No need to delete, unique_ptr takes care of it
     }

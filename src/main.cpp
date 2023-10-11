@@ -4,6 +4,12 @@
 #include "./models/Tank.h"
 #include "./models/Projectile.h"
 #include <ncurses.h>
+
+const int WALL_HEIGHT = 50;
+const int WALL_WIDTH = 200;
+const int INITIAL_LIVES = 3;
+const int SLEEP_DURATION = 50000;
+
 void checkCollisions(Tank &tank1, Tank &tank2)
 {
     // Check if any projectile from tank1 hit tank2
@@ -35,6 +41,24 @@ void checkCollisions(Tank &tank1, Tank &tank2)
             ++i;
         }
     }
+}
+void displayVictoryMessage(int winnerPlayerColor, const std::string &winnerPlayer)
+{
+    erase(); // Clear the screen
+
+    attron(COLOR_PAIR(winnerPlayerColor));
+    mvprintw(25, 75, (winnerPlayer + " won the game!").c_str()); // Display the message at approximately the center of the screen
+    attroff(COLOR_PAIR(winnerPlayerColor));
+    refresh();
+
+    // Option 1: Delay Method
+    usleep(5000000); // Sleep for 5 seconds
+
+    // Option 2: Key Press Method
+    mvprintw(26, 75, "Press any key to exit...");
+
+    refresh();
+    getch(); // Wait for a key press
 }
 
 void drawLayout(int player1Lives, int player2Lives)
@@ -145,6 +169,16 @@ int main()
 
     while (true)
     {
+        if (player1Tank.lives <= 0)
+        {
+            displayVictoryMessage(player2Tank.color, "Player 2");
+            break;
+        }
+        else if (player2Tank.lives <= 0)
+        {
+            displayVictoryMessage(player1Tank.color, "Player 1");
+            break;
+        }
         // Clear screen
         erase();
 
