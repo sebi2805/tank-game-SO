@@ -10,5 +10,6 @@ public:
           char direction;
           Projectile(int tankId, int x, int y, char direction, int color);
           void move();
+          void draw();
 };
 #endif

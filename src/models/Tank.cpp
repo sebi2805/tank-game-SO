@@ -114,3 +114,9 @@ void Tank::removeProjectile(int index)
         projectiles.erase(projectiles.begin() + index); // No need to delete, unique_ptr takes care of it
     }
 }
+void Tank::draw()
+{
+    attron(COLOR_PAIR(this->color));
+    mvprintw(this->x, this->y, "T");
+    attroff(COLOR_PAIR(this->color));
+}

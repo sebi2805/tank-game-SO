@@ -22,6 +22,7 @@ public:
           void removeProjectile(int index);
           bool checkCollision(const std::vector<Projectile *> &projectiles);
           bool isHit(int x, int y);
+          void draw();
 };
 bool is_wall(int x, int y);
 #endif
