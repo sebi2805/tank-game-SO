@@ -3,8 +3,8 @@ LDFLAGS = -lncurses
 
 all: TankGame
 
-TankGame: main.o Game.o ./models/Tank.o ./models/Projectile.o
-	$(CXX) $(CXXFLAGS) -o TankGame main.o Game.o ./models/Tank.o ./models/Projectile.o $(LDFLAGS)
+TankGame: main.o ./models/Tank.o ./models/Projectile.o Game.o
+	g++ -Wall -o TankGame main.o ./models/Tank.o Game.o ./models/Projectile.o -lncurses -lrt -lpthread
 
 main.o: main.cpp ./models/Tank.h ./models/Projectile.h Game.h
 	$(CXX) $(CXXFLAGS) -c main.cpp

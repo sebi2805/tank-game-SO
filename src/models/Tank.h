@@ -3,7 +3,11 @@
 #include "./Projectile.h"
 #include <vector>
 #include <memory>
-
+struct Cell
+{
+          char character;
+          int color;
+};
 class Tank
 {
 public:
@@ -16,7 +20,7 @@ public:
           Tank(int id, int x, int y, int color, int initialLives);
           void decreaseLife();
           int getLives() const;
-          void move(int direction);
+          void move(int key, Cell *board);
           std::vector<std::unique_ptr<Projectile>> projectiles;
           void shoot();
           void removeProjectile(int index);

@@ -16,6 +16,7 @@ Tank::Tank(int id, int x, int y, int color, int initialLives) : id(id), color(co
     {
         throw std::runtime_error("Cannot create more than two tanks.");
     }
+    lastDirection = 'u';
 }
 void Tank::decreaseLife()
 {
@@ -43,7 +44,7 @@ bool is_wall(int x, int y)
     return (x == 10 || x == 49 || y == 0 || y == 199);
 }
 
-void Tank::move(int key)
+void Tank::move(int key, Cell *board)
 {
 
     int newX = x, newY = y;
@@ -95,18 +96,32 @@ void Tank::move(int key)
         }
     }
 
+    const int cols = 200; // Number of columns in the board
+
+    // Remove the tank's old position from the board
+    board[x * cols + y].character = ' ';
+    board[x * cols + y].color = 0; // Default color
+
     if (!is_wall(newX, newY))
     {
         x = newX;
         y = newY;
     }
+
+    // Update the tank's new position in the board
+    board[x * cols + y].character = 'T';
+    board[x * cols + y].color = color;
 }
 
 void Tank::shoot()
 {
-    projectiles.push_back(std::make_unique<Projectile>(id, x, y, lastDirection, color)); // Change to make_unique
-}
+    int projectileX = x + (lastDirection == 'u' ? -1 : lastDirection == 'd' ? 1
+                                                                            : 0);
+    int projectileY = y + (lastDirection == 'l' ? -1 : lastDirection == 'r' ? 1
+                                                                            : 0);
 
+    projectiles.push_back(std::make_unique<Projectile>(id, projectileX, projectileY, lastDirection, color));
+}
 void Tank::removeProjectile(int index)
 {
     if (index < projectiles.size())
