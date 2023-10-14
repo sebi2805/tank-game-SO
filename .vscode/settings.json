@@ -43,6 +43,7 @@
     "streambuf": "cpp",
     "typeinfo": "cpp",
     "iostream": "cpp",
-    "LISTE.C": "cpp"
+    "LISTE.C": "cpp",
+    "tank.h": "c"
   }
 }

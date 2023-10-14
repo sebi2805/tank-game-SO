@@ -20,9 +20,16 @@ void Projectile::move()
         break;
     }
 }
-void Projectile::draw()
-{
-    attron(COLOR_PAIR(this->color));
-    mvprintw(this->x, this->y, "*");
-    attroff(COLOR_PAIR(this->color));
-}
+// Getter functions
+int Projectile::getTankId() const { return tankId; }
+int Projectile::getColor() const { return color; }
+int Projectile::getX() const { return x; }
+int Projectile::getY() const { return y; }
+char Projectile::getDirection() const { return direction; }
+
+// Setter functions
+void Projectile::setTankId(int newTankId) { tankId = newTankId; }
+void Projectile::setColor(int newColor) { color = newColor; }
+void Projectile::setX(int newX) { x = newX; }
+void Projectile::setY(int newY) { y = newY; }
+void Projectile::setDirection(char newDirection) { direction = newDirection; }

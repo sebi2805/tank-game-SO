@@ -1,6 +1,7 @@
 #include "Tank.h"
 #include <stdexcept>
 #include <ncurses.h>
+#include "../global_constants.h"
 
 int Tank::instanceCount = 0;
 
@@ -18,30 +19,13 @@ Tank::Tank(int id, int x, int y, int color, int initialLives) : id(id), color(co
     }
     lastDirection = 'u';
 }
-void Tank::decreaseLife()
-{
-    --lives;
-}
-
-int Tank::getLives() const
-{
-    return lives;
-}
-bool Tank::checkCollision(const std::vector<Projectile *> &projectiles)
-{
-    for (const auto &projectile : projectiles)
-    {
-        if (x == projectile->x && y == projectile->y)
-        {
-            return true;
-        }
-    }
-    return false;
-}
-
 bool is_wall(int x, int y)
 {
     return (x == 10 || x == 49 || y == 0 || y == 199);
+}
+void Tank::decreaseLife()
+{
+    --lives;
 }
 
 void Tank::move(int key, Cell *board)
@@ -96,11 +80,9 @@ void Tank::move(int key, Cell *board)
         }
     }
 
-    const int cols = 200; // Number of columns in the board
-
     // Remove the tank's old position from the board
-    board[x * cols + y].character = ' ';
-    board[x * cols + y].color = 0; // Default color
+    board[x * GAME_COLS + y].character = ' ';
+    board[x * GAME_COLS + y].color = 0; // Default color
 
     if (!is_wall(newX, newY))
     {
@@ -109,8 +91,8 @@ void Tank::move(int key, Cell *board)
     }
 
     // Update the tank's new position in the board
-    board[x * cols + y].character = 'T';
-    board[x * cols + y].color = color;
+    board[x * GAME_COLS + y].character = 'T';
+    board[x * GAME_COLS + y].color = color;
 }
 
 void Tank::shoot()
@@ -129,9 +111,23 @@ void Tank::removeProjectile(int index)
         projectiles.erase(projectiles.begin() + index); // No need to delete, unique_ptr takes care of it
     }
 }
-void Tank::draw()
+
+// Getter functions
+int Tank::getColor() const { return color; }
+int Tank::getId() const { return id; }
+int Tank::getX() const { return x; }
+int Tank::getY() const { return y; }
+char Tank::getLastDirection() const { return lastDirection; }
+int Tank::getLives() const { return lives; }
+const std::vector<std::unique_ptr<Projectile>> &Tank::getProjectiles() const
 {
-    attron(COLOR_PAIR(this->color));
-    mvprintw(this->x, this->y, "T");
-    attroff(COLOR_PAIR(this->color));
+    return projectiles;
 }
+
+// Setter functions
+void Tank::setColor(int newColor) { color = newColor; }
+void Tank::setId(int newId) { id = newId; }
+void Tank::setX(int newX) { x = newX; }
+void Tank::setY(int newY) { y = newY; }
+void Tank::setLastDirection(char newLastDirection) { lastDirection = newLastDirection; }
+void Tank::setLives(int newLives) { lives = newLives; }
